@@ -1,8 +1,8 @@
 import { RenderElementProps } from 'slate-react';
 import { AlignType } from '@/features/richtext/types/custom-types';
 import { isAlignElement } from '@/features/richtext/utils/type-guards';
-import { Code } from '@/features/richtext/components/element/code';
-import { H1, H2 } from '@/features/richtext/components/element/heading';
+import { Code } from '@/features/richtext/components/nodes/code';
+import { H1, H2 } from '@/features/richtext/components/nodes/heading';
 import {
   BlockQuoteType,
   BulletedListType,

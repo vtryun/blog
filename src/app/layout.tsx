@@ -29,7 +29,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <NavLink />
-            {children}
+              {children}
             <SnackbarAlert />
             <CssBaseline />
           </ThemeProvider>

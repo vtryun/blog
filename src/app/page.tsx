@@ -1,7 +1,21 @@
+import prisma from '@/lib/prisma';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { PostStatus } from '@prisma/client';
 
 export default async function HomePage() {
+  const posts = await prisma.post.findMany({
+    select: {
+      title: true,
+      slug: true,
+      createdAt: true,
+    },
+    where: {
+      status: PostStatus.PUBLISHED,
+    },
+  });
+
+  console.log(posts);
   return (
     <Box
       sx={{
@@ -11,7 +25,7 @@ export default async function HomePage() {
         alignItems: 'center',
       }}
     >
-      <Typography>avtyun blog</Typography>
+      <pre>{JSON.stringify(posts, null, 2)}</pre>
     </Box>
   );
 }

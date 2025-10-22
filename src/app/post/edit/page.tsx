@@ -3,7 +3,7 @@
 import { INITIAL_VALUE } from '@/features/richtext/constants/initvalue';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useCallback, useMemo, useState, type MouseEvent } from 'react';
+import { useCallback, useEffect, useMemo, useState, type MouseEvent } from 'react';
 import { createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import {
@@ -29,6 +29,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import { useSnackbar } from '@/share/hooks/use-snackbar';
+import TextField from '@mui/material/TextField';
 
 export default function EditorPage() {
   const editor = useMemo(
@@ -36,7 +37,9 @@ export default function EditorPage() {
     []
   );
 
-  const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED'>('DRAFT');
+  const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED'>('PUBLISHED');
+  const [category, setCategory] = useState('');
+  const [tags, setTags] = useState<string>('');
   const { showSnackbar } = useSnackbar();
   const decorate = useDecorate();
   const renderElement = useCallback(
@@ -47,6 +50,10 @@ export default function EditorPage() {
     (props: RenderLeafProps) => <Leaf {...props} />,
     []
   );
+
+  useEffect(()=>{
+    console.log(status)
+  },[status])
 
   async function handleSubmit() {
     if (!editor) {
@@ -59,10 +66,18 @@ export default function EditorPage() {
       slug: slugify(title),
       status,
       content: editor.children,
+      category,
+      tags,
     });
     try {
-      await createPost({ title, content: editor.children });
-      showSnackbar('post created successfully', 'success')
+      await createPost({
+        title,
+        content: editor.children,
+        status,
+        categoryName: category,
+        tagNames: tags.split(','),
+      });
+      showSnackbar('post created successfully', 'success');
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
@@ -72,34 +87,60 @@ export default function EditorPage() {
   }
 
   return (
-    <Box>
-      <Box component={Slate} editor={editor} initialValue={INITIAL_VALUE}>
-        <Toolbar />
-        <Box
-          component={Editable}
-          renderElement={renderElement}
-          renderLeaf={renderLeaf}
-          decorate={decorate}
-          spellCheck={false}
-          autoFocus
-          placeholder="Enter a title…"
-          renderPlaceholder={({ attributes, children }) => (
-            <Typography component="span" {...attributes} sx={{ pt: 4 }}>
-              {children}
-            </Typography>
-          )}
-          sx={{
-            minHeight: '100% !important',
-            py: 2,
-            bgcolor: grey[100],
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word',
-            overflowWrap: 'break-word',
-            '&:focus': { outline: 'none' },
-          }}
-        />
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        gap: 4,
+      }}
+    >
+      <Box sx={{ flex: 1 }}>
+        <Stack component={Slate} editor={editor} initialValue={INITIAL_VALUE}>
+          <Toolbar />
+          <Box
+            component={Editable}
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
+            decorate={decorate}
+            spellCheck={false}
+            autoFocus
+            placeholder="Enter a title…"
+            renderPlaceholder={({ attributes, children }) => (
+              <Typography component="span" {...attributes} sx={{ pt: 4 }}>
+                {children}
+              </Typography>
+            )}
+            sx={{
+              minHeight: '100% !important',
+              py: 2,
+              bgcolor: grey[100],
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+              '&:focus': { outline: 'none' },
+            }}
+          />
+        </Stack>
       </Box>
-      <Stack>
+      <Stack justifyContent="center" sx={{ width: 400, p: 2 }}>
+        <Stack gap={2}>
+          <TextField
+            id="category"
+            label="category"
+            variant="outlined"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          />
+          <TextField
+            id="tags"
+            label="tags"
+            variant="outlined"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+          />
+        </Stack>
+
         <FormControl component="fieldset" margin="normal">
           <FormLabel component="legend">Status</FormLabel>
           <RadioGroup
@@ -116,6 +157,7 @@ export default function EditorPage() {
             />
           </RadioGroup>
         </FormControl>
+
         <Button onClick={handleSubmit} sx={{ textTransform: 'none', mt: 2 }}>
           Submit
         </Button>

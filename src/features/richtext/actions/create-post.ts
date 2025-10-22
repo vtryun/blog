@@ -3,6 +3,7 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
+import { nanoid } from "nanoid";
 import slugify from "slugify";
 
 export interface CreatePostParams {
@@ -33,15 +34,17 @@ export async function createPost(params: CreatePostParams) {
     excerpt,
     coverImage,
     categoryId,
+    categoryName,
     tagIds = [],
-    status = "DRAFT",
+    tagNames = [],
+    status
   } = params;
 
   if (!title || !content) {
     throw new Error("title and content are required.");
   }
 
-  const slug = slugify(`${title}-${authorId}`);
+  const slug = slugify(`${title}-${nanoid(10)}`, { lower: true, strict: false });
   const existingPost = await prisma.post.findUnique({
     where: { slug },
   });
@@ -50,27 +53,57 @@ export async function createPost(params: CreatePostParams) {
     throw new Error(`The slug generated from the title already exists. Please modify the title or specify a slug manually. Duplicate slug: ${slug}`);
   }
 
-  const post = await prisma.post.create({
-    data: {
-      title,
-      slug,
-      content,
-      excerpt,
-      coverImage,
-      status,
-      author: { connect: { id: authorId } },
-      category: categoryId ? { connect: { id: categoryId } } : undefined,
-      tags:
-        tagIds.length > 0
-          ? { connect: tagIds.map((id) => ({ id })) }
-          : undefined,
-    },
-    include: {
-      author: true,
-      tags: true,
-      category: true,
-    },
-  });
+  return await prisma.$transaction(async (tx) => {
+    let categoryConnect;
+    if (categoryId) {
+      categoryConnect = { connect: { id: categoryId } };
+    } else if (categoryName) {
+      const category = await tx.category.upsert({
+        where: { name: categoryName },
+        update: {},
+        create: { name: categoryName },
+      });
+      categoryConnect = { connect: { id: category.id } };
+    }
 
-  return post;
+    const tagConnects = [];
+    if (tagIds.length > 0) {
+      tagConnects.push(...tagIds.map((id) => ({ id })));
+    }
+
+    if (tagNames.length > 0) {
+      const tagRecords = await Promise.all(
+        tagNames.map((name) =>
+          tx.tag.upsert({
+            where: { name },
+            update: {},
+            create: { name },
+          })
+        )
+      );
+      tagConnects.push(...tagRecords.map((tag) => ({ id: tag.id })));
+    }
+
+    const post = await tx.post.create({
+      data: {
+        title,
+        slug,
+        content,
+        excerpt,
+        coverImage,
+        status,
+        author: { connect: { id: authorId } },
+        category: categoryConnect,
+        tags: tagConnects.length > 0 ? { connect: tagConnects } : undefined,
+      },
+      include: {
+        author: true,
+        tags: true,
+        category: true,
+      },
+    });
+
+    return post;
+
+  });
 }

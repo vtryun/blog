@@ -5,6 +5,7 @@ import { grey } from '@mui/material/colors';
 
 const NAV_LINKS = [
   { label: 'login', href: '/auth' },
+  { label: 'create post', href: '/post/edit' },
   { label: 'dashboard', href: '/dashboard' },
 ];
 

@@ -4,7 +4,6 @@ import {
   FormatBold,
   FormatItalic,
   FormatUnderlined,
-  Code,
   LooksOne,
   LooksTwo,
   FormatQuote,
@@ -16,6 +15,7 @@ import {
   FormatAlignJustify,
 } from '@mui/icons-material';
 import {
+  AlertBlockElement,
   CodeBlockElement,
   CustomElementFormat,
   CustomTextKey,
@@ -25,12 +25,9 @@ import { useSlate } from 'slate-react';
 import { toggleBlock, toggleMark } from '@/features/richtext/utils/toggle';
 import IconButton from '@mui/material/IconButton';
 import CodeIcon from '@mui/icons-material/Code';
-import { Transforms, Element } from 'slate';
-import {
-  CodeBlockType,
-  ParagraphType,
-  CodeLineType,
-} from '@/features/richtext/constants/node-types';
+import { Transforms } from 'slate';
+import { ALERT_TYPE, PARAGRAPH_TYPE } from '../constants/node-types';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 
 interface MarkButtonProps {
   format: CustomTextKey;
@@ -104,6 +101,37 @@ const CodeBlockButton = () => {
   );
 };
 
+const AlertBlockButton = () => {
+  const editor = useSlate();
+
+  const handleClick = () => {
+    const alertBlock: AlertBlockElement = {
+      type: ALERT_TYPE,
+      children: [{ text: '' }],
+      severity: 'success',
+    };
+
+    const paragraph: ParagraphElement = {
+      type: PARAGRAPH_TYPE,
+      children: [{ text: '' }],
+    };
+
+    Transforms.insertNodes(editor, [alertBlock, paragraph]);
+  };
+
+  return (
+    <IconButton
+      data-test-id="alert-block-button"
+      onPointerDown={(event: PointerEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+      }}
+      onClick={handleClick}
+    >
+      <PriorityHighIcon />
+    </IconButton>
+  );
+};
+
 export default function Toolbar() {
   return (
     <Box sx={{ display: 'flex', gap: 0.5, p: 1 }}>
@@ -121,6 +149,7 @@ export default function Toolbar() {
       <BlockButton format="right" icon={<FormatAlignRight />} />
       <BlockButton format="justify" icon={<FormatAlignJustify />} />
       <CodeBlockButton />
+      <AlertBlockButton />
     </Box>
   );
 }

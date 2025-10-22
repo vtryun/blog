@@ -3,7 +3,13 @@
 import { INITIAL_VALUE } from '@/features/richtext/constants/initvalue';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useCallback, useEffect, useMemo, useState, type MouseEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type MouseEvent,
+} from 'react';
 import { createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import {
@@ -51,9 +57,9 @@ export default function EditorPage() {
     []
   );
 
-  useEffect(()=>{
-    console.log(status)
-  },[status])
+  useEffect(() => {
+    console.log(status);
+  }, [status]);
 
   async function handleSubmit() {
     if (!editor) {
@@ -92,10 +98,11 @@ export default function EditorPage() {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        minHeight:'100%',
         gap: 4,
       }}
     >
-      <Box sx={{ flex: 1 }}>
+      <Box sx={{ flex: 1, p: 2 }}>
         <Stack component={Slate} editor={editor} initialValue={INITIAL_VALUE}>
           <Toolbar />
           <Box
@@ -107,14 +114,19 @@ export default function EditorPage() {
             autoFocus
             placeholder="Enter a title…"
             renderPlaceholder={({ attributes, children }) => (
-              <Typography component="span" {...attributes} sx={{ pt: 4 }}>
+              <Typography
+                component="span"
+                {...attributes}
+                sx={{ fontSize: 96 }}
+              >
                 {children}
               </Typography>
             )}
             sx={{
               minHeight: '100% !important',
-              py: 2,
-              bgcolor: grey[100],
+              p: 2,
+              bgcolor: 'white',
+              border: '1px solid #ddd',
               whiteSpace: 'pre-wrap',
               wordBreak: 'break-word',
               overflowWrap: 'break-word',
@@ -123,45 +135,53 @@ export default function EditorPage() {
           />
         </Stack>
       </Box>
-      <Stack justifyContent="center" sx={{ width: 400, p: 2 }}>
-        <Stack gap={2}>
-          <TextField
-            id="category"
-            label="category"
-            variant="outlined"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-          <TextField
-            id="tags"
-            label="tags"
-            variant="outlined"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-          />
-        </Stack>
-
-        <FormControl component="fieldset" margin="normal">
-          <FormLabel component="legend">Status</FormLabel>
-          <RadioGroup
-            aria-labelledby="status-radio-group-label"
-            name="status"
-            value={status}
-            onChange={(e) => setStatus(e.target.value as 'DRAFT' | 'PUBLISHED')}
-          >
-            <FormControlLabel value="DRAFT" control={<Radio />} label="draft" />
-            <FormControlLabel
-              value="PUBLISHED"
-              control={<Radio />}
-              label="public"
+      <Box>
+        <Stack justifyContent="center" sx={{ width: 400, p: 2 }}>
+          <Stack gap={2} sx={{ position: 'sticky', top: 0 }}>
+            <TextField
+              id="category"
+              label="category"
+              variant="outlined"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
             />
-          </RadioGroup>
-        </FormControl>
+            <TextField
+              id="tags"
+              label="tags"
+              variant="outlined"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+            />
+          </Stack>
 
-        <Button onClick={handleSubmit} sx={{ textTransform: 'none', mt: 2 }}>
-          Submit
-        </Button>
-      </Stack>
+          <FormControl component="fieldset" margin="normal">
+            <FormLabel component="legend">Status</FormLabel>
+            <RadioGroup
+              aria-labelledby="status-radio-group-label"
+              name="status"
+              value={status}
+              onChange={(e) =>
+                setStatus(e.target.value as 'DRAFT' | 'PUBLISHED')
+              }
+            >
+              <FormControlLabel
+                value="DRAFT"
+                control={<Radio />}
+                label="draft"
+              />
+              <FormControlLabel
+                value="PUBLISHED"
+                control={<Radio />}
+                label="public"
+              />
+            </RadioGroup>
+          </FormControl>
+
+          <Button onClick={handleSubmit} sx={{ textTransform: 'none', mt: 2 }}>
+            Submit
+          </Button>
+        </Stack>
+      </Box>
     </Box>
   );
 }

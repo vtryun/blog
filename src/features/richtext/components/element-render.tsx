@@ -4,15 +4,17 @@ import { isAlignElement } from '@/features/richtext/utils/type-guards';
 import { Code } from '@/features/richtext/components/nodes/code';
 import { H1, H2 } from '@/features/richtext/components/nodes/heading';
 import {
-  BlockQuoteType,
-  BulletedListType,
-  CodeBlockType,
-  HeadingOneType,
-  HeadingTwoType,
-  ListItemType,
-  NumberedListType,
-  TitleType,
+  ALERT_TYPE,
+  BLOCK_QUOTE_TYPE,
+  BULLETED_LIST_TYPE,
+  CODE_BLOCK_TYPE,
+  HEADING_ONE_TYPE,
+  HEADING_TWO_TYPE,
+  LIST_ITEM_TYPE,
+  NUMBERED_LIST_TYPE,
+  TITLE_TYPE,
 } from '@/features/richtext/constants/node-types';
+import { Alert } from './nodes/alert';
 
 export const Element = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
@@ -21,45 +23,47 @@ export const Element = (props: RenderElementProps) => {
     style.textAlign = element.align as AlignType;
   }
   switch (element.type) {
-    case CodeBlockType:
+    case CODE_BLOCK_TYPE:
       return <Code {...props} />;
-    case BlockQuoteType:
+    case ALERT_TYPE:
+      return <Alert {...props}/>
+    case BLOCK_QUOTE_TYPE:
       return (
         <blockquote style={style} {...attributes}>
           {children}
         </blockquote>
       );
-    case BulletedListType:
+    case BULLETED_LIST_TYPE:
       return (
         <ul style={style} {...attributes}>
           {children}
         </ul>
       );
-    case TitleType:
+    case TITLE_TYPE:
       return (
         <H1 style={style} {...attributes}>
           {children}
         </H1>
       );
-    case HeadingOneType:
+    case HEADING_ONE_TYPE:
       return (
         <H1 style={style} {...attributes}>
           {children}
         </H1>
       );
-    case HeadingTwoType:
+    case HEADING_TWO_TYPE:
       return (
         <H2 style={style} {...attributes}>
           {children}
         </H2>
       );
-    case ListItemType:
+    case LIST_ITEM_TYPE:
       return (
         <li style={style} {...attributes}>
           {children}
         </li>
       );
-    case NumberedListType:
+    case NUMBERED_LIST_TYPE:
       return (
         <ol style={style} {...attributes}>
           {children}

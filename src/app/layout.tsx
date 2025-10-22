@@ -1,10 +1,37 @@
 import * as React from 'react';
+import { ThemeProvider } from '@mui/material/styles';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+import theme from '@/share/styles/theme';
+import { Roboto, Fira_Code } from 'next/font/google';
+import CssBaseline from '@mui/material/CssBaseline';
+import NavLink from '@/share/components/nav-link';
+
+const roboto = Roboto({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-roboto',
+});
+
+const firaCode = Fira_Code({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-firaCode',
+});
 
 export default function RootLayout(props: { children: React.ReactNode }) {
+  const { children } = props;
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={roboto.variable}>
       <body>
-        {props.children}
+        <AppRouterCacheProvider>
+          <ThemeProvider theme={theme}>
+            <NavLink />
+            {children}
+            <CssBaseline />
+          </ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

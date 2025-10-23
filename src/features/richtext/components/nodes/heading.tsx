@@ -13,21 +13,41 @@ export function H1(props: RenderElementPropsFor<HeadingElement>) {
 }
 
 export function H2(props: RenderElementPropsFor<HeadingElement>) {
-  return <Typography variant="h2">{props.children}</Typography>;
+  return (
+    <Typography variant="h2" mb={4}>
+      {props.children}
+    </Typography>
+  );
 }
 
 export function H3(props: RenderElementPropsFor<HeadingElement>) {
-  return <Typography variant="h3">{props.children}</Typography>;
+  return (
+    <Typography variant="h3" mb={3}>
+      {props.children}
+    </Typography>
+  );
 }
 
 export function H4(props: RenderElementPropsFor<HeadingElement>) {
-  return <Typography variant="h4">{props.children}</Typography>;
+  return (
+    <Typography variant="h4" mb={3}>
+      {props.children}
+    </Typography>
+  );
 }
 
 export function H5(props: RenderElementPropsFor<HeadingElement>) {
-  return <Typography variant="h5">{props.children}</Typography>;
+  return (
+    <Typography variant="h5" mb={2}>
+      {props.children}
+    </Typography>
+  );
 }
 
 export function H6(props: RenderElementPropsFor<HeadingElement>) {
-  return <Typography variant="h6">{props.children}</Typography>;
+  return (
+    <Typography variant="h6" mb={2}>
+      {props.children}
+    </Typography>
+  );
 }

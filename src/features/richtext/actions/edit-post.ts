@@ -3,10 +3,8 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
-import { nanoid } from "nanoid";
-import slugify from "slugify";
 
-export interface CreatePostParams {
+export interface EditPostParams {
   title: string;
   content: any[] | null;
   excerpt?: string;
@@ -15,10 +13,11 @@ export interface CreatePostParams {
   categoryName?: string;
   tagIds?: string[];
   tagNames?: string[];
-  status?: "DRAFT" | "PUBLISHED";
+  status?: "DRAFT" | "PUBLISHED" ;
+  slug?: string; // 允许通过 slug 定位文章
 }
 
-export async function createPost(params: CreatePostParams) {
+export async function editPost(params: EditPostParams) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -29,6 +28,7 @@ export async function createPost(params: CreatePostParams) {
 
   const authorId = session.user.id;
   const {
+    slug,
     title,
     content,
     excerpt,
@@ -37,26 +37,33 @@ export async function createPost(params: CreatePostParams) {
     categoryName,
     tagIds = [],
     tagNames = [],
-    status = "PUBLISHED",
+    status,
   } = params;
 
   if (!title || !content) {
     throw new Error("title and content are required.");
   }
 
-  // 生成唯一 slug
-  const slug = slugify(`${title}-${nanoid(8)}`, { lower: true, strict: true });
+  if (!slug) {
+    throw new Error("slug is required for editing post.");
+  }
 
-  // 检查是否重复
+  // 查找现有文章
   const existingPost = await prisma.post.findUnique({
     where: { slug },
   });
-  if (existingPost) {
-    throw new Error(`Duplicate slug: ${slug}. Please change the title.`);
+
+  if (!existingPost) {
+    throw new Error("Post not found.");
+  }
+
+  // 检查作者权限
+  if (existingPost.authorId !== authorId) {
+    throw new Error("You do not have permission to edit this post.");
   }
 
   return await prisma.$transaction(async (tx) => {
-    // 处理分类
+    // 分类
     let categoryConnect;
     if (categoryId) {
       categoryConnect = { connect: { id: categoryId } };
@@ -69,7 +76,7 @@ export async function createPost(params: CreatePostParams) {
       categoryConnect = { connect: { id: category.id } };
     }
 
-    // 处理标签
+    // 标签
     const tagConnects = [];
     if (tagIds.length > 0) {
       tagConnects.push(...tagIds.map((id) => ({ id })));
@@ -84,25 +91,27 @@ export async function createPost(params: CreatePostParams) {
           })
         )
       );
-      tagConnects.push(...tagRecords.map((t) => ({ id: t.id })));
+      tagConnects.push(...tagRecords.map((tag) => ({ id: tag.id })));
     }
 
-    // 创建文章
-    const post = await tx.post.create({
+    // 更新文章
+    const updatedPost = await tx.post.update({
+      where: { slug },
       data: {
         title,
-        slug,
         content,
         excerpt,
         coverImage,
         status,
-        author: { connect: { id: authorId } },
         category: categoryConnect,
-        tags: tagConnects.length > 0 ? { connect: tagConnects } : undefined,
+        tags: {
+          set: [], // 先清空旧标签再连接新标签
+          connect: tagConnects,
+        },
       },
       include: { author: true, tags: true, category: true },
     });
 
-    return post;
+    return updatedPost;
   });
 }

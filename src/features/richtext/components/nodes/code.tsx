@@ -68,7 +68,7 @@ export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000); // 2秒后恢复
+      setTimeout(() => setCopied(false), 2000);
       console.log('chenggong');
     } catch (err) {
       console.error('复制失败', err);
@@ -85,8 +85,13 @@ export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
       {...attributes}
       // onClick={readOnly ? null : props.onClick}
       spellCheck={false}
-      sx={{ position: 'relative', borderRadius: 2 }}
+      sx={{
+        position: 'relative',
+        borderRadius: 2,
+        overflow: 'hidden',
+      }}
     >
+      {/* select code language */}
       {!readOnly && (
         <Select
           labelId="code-language-select-label"
@@ -128,11 +133,13 @@ export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
           ))}
         </Select>
       )}
+
+      {/* copy button */}
       {readOnly && (
-        <Box sx={{ position: 'sticky', top: 100 }}>
+        <Box sx={{ position: 'sticky', top: 10, zIndex: 9999 }}>
           <IconButton
             onClick={(e) => {
-              e.stopPropagation(); // 防止触发编辑器 focus 等行为
+              e.stopPropagation();
               handleCopy();
             }}
             sx={{
@@ -140,7 +147,6 @@ export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
               color: grey[400],
               top: 10,
               right: 10,
-              zIndex: 100,
               pointerEvents: 'auto',
             }}
           >
@@ -156,7 +162,9 @@ export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
       <pre
         className={`language-${element.language}`}
         tabIndex={0}
-        style={{ pointerEvents: 'none' }}
+        style={{
+          pointerEvents: 'none',
+        }}
       >
         <code
           className={`language-${element.language}`}

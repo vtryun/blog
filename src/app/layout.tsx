@@ -4,7 +4,6 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import theme from '@/share/styles/theme';
 import { Roboto, Fira_Code } from 'next/font/google';
 import CssBaseline from '@mui/material/CssBaseline';
-import NavLink from '@/share/components/nav-link';
 import SnackbarAlert from '@/share/components/snackbar-alert';
 
 const roboto = Roboto({
@@ -28,8 +27,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
-            <NavLink />
-              {children}
+            {children}
             <SnackbarAlert />
             <CssBaseline />
           </ThemeProvider>

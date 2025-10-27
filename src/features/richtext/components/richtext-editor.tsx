@@ -148,58 +148,60 @@ export default function RichtextEditor({
       </Box>
 
       <Box>
-        <Stack justifyContent="center" sx={{ width: 400, p: 2 }}>
-          <Stack gap={2} sx={{ position: 'sticky', top: 0 }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              {mode === 'edit' ? 'Edit Post' : 'Create Post'}
-            </Typography>
+        <Stack
+          justifyContent="center"
+          gap={2}
+          sx={{ width: 400, p: 2, position: 'sticky', top: 0 }}
+        >
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            {mode === 'edit' ? 'Edit Post' : 'Create Post'}
+          </Typography>
 
-            <TextField
-              id="category"
-              label="Category"
-              variant="outlined"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            />
+          <TextField
+            id="category"
+            label="Category"
+            variant="outlined"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          />
 
-            <TextField
-              id="tags"
-              label="Tags (comma separated)"
-              variant="outlined"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-            />
+          <TextField
+            id="tags"
+            label="Tags (comma separated)"
+            variant="outlined"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+          />
 
-            <FormControl component="fieldset" margin="normal">
-              <FormLabel component="legend">Status</FormLabel>
-              <RadioGroup
-                name="status"
-                value={status}
-                onChange={(e) =>
-                  setStatus(e.target.value as 'DRAFT' | 'PUBLISHED')
-                }
-              >
-                <FormControlLabel
-                  value="DRAFT"
-                  control={<Radio />}
-                  label="Draft"
-                />
-                <FormControlLabel
-                  value="PUBLISHED"
-                  control={<Radio />}
-                  label="Published"
-                />
-              </RadioGroup>
-            </FormControl>
-
-            <Button
-              variant="contained"
-              onClick={handleSubmit}
-              sx={{ textTransform: 'none', mt: 2 }}
+          <FormControl component="fieldset" margin="normal">
+            <FormLabel component="legend">Status</FormLabel>
+            <RadioGroup
+              name="status"
+              value={status}
+              onChange={(e) =>
+                setStatus(e.target.value as 'DRAFT' | 'PUBLISHED')
+              }
             >
-              {mode === 'edit' ? 'Update Post' : 'Create Post'}
-            </Button>
-          </Stack>
+              <FormControlLabel
+                value="DRAFT"
+                control={<Radio />}
+                label="Draft"
+              />
+              <FormControlLabel
+                value="PUBLISHED"
+                control={<Radio />}
+                label="Published"
+              />
+            </RadioGroup>
+          </FormControl>
+
+          <Button
+            variant="contained"
+            onClick={handleSubmit}
+            sx={{ textTransform: 'none', mt: 2 }}
+          >
+            {mode === 'edit' ? 'Update Post' : 'Create Post'}
+          </Button>
         </Stack>
       </Box>
     </Box>

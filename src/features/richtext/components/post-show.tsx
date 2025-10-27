@@ -12,11 +12,11 @@ import {
 } from 'slate-react';
 import { Leaf } from '@/features/richtext/components/leaf-render';
 import { Element } from '@/features/richtext/components/element-render';
-import { withLayout } from '../plugins/with-layout';
-import { useDecorate } from '../hooks/useDecorate';
+import { withLayout } from '@/features/richtext/plugins/with-layout';
+import { useDecorate } from '@/features/richtext/hooks/useDecorate';
 import { Stack, Box, Typography } from '@mui/material';
-import { INITIAL_VALUE } from '../constants/initvalue';
-import { CODE_BLOCK_TYPE, HEADING_SIX_TYPE } from '../constants/node-types';
+import { INITIAL_VALUE } from '@/features/richtext/constants/initvalue';
+import { CODE_BLOCK_TYPE, HEADING_SIX_TYPE } from '@/features/richtext/constants/node-types';
 
 export default function PostShow({
   content = INITIAL_VALUE,

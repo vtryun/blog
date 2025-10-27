@@ -2,12 +2,20 @@ import { RenderElementProps } from 'slate-react';
 import { AlignType } from '@/features/richtext/types/custom-types';
 import { isAlignElement } from '@/features/richtext/utils/type-guards';
 import { Code } from '@/features/richtext/components/nodes/code';
-import { H1, H2, H3, H4, H5, H6 } from '@/features/richtext/components/nodes/heading';
+import {
+  H1,
+  H2,
+  H3,
+  H4,
+  H5,
+  H6,
+} from '@/features/richtext/components/nodes/heading';
 import {
   ALERT_TYPE,
   BLOCK_QUOTE_TYPE,
   BULLETED_LIST_TYPE,
   CODE_BLOCK_TYPE,
+  DIVIDER_TYPE,
   HEADING_FIVE_TYPE,
   HEADING_FOUR_TYPE,
   HEADING_ONE_TYPE,
@@ -18,7 +26,9 @@ import {
   NUMBERED_LIST_TYPE,
   TITLE_TYPE,
 } from '@/features/richtext/constants/node-types';
-import { Alert } from './nodes/alert';
+import { Alert } from '@/features/richtext/components/nodes/alert';
+import Blockquote from '@/features/richtext/components/nodes/blockquote';
+import Divider from '@/features/richtext/components/nodes/divider';
 
 export const Element = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
@@ -32,11 +42,9 @@ export const Element = (props: RenderElementProps) => {
     case ALERT_TYPE:
       return <Alert {...props} />;
     case BLOCK_QUOTE_TYPE:
-      return (
-        <blockquote style={style} {...attributes}>
-          {children}
-        </blockquote>
-      );
+      return <Blockquote {...props} />;
+    case DIVIDER_TYPE:
+      return <Divider {...props} />;
     case BULLETED_LIST_TYPE:
       return (
         <ul style={style} {...attributes}>

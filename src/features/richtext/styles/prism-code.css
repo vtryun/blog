@@ -263,7 +263,7 @@ code[class*='language-html'] {
   color: #808080;
 }
 
-.token.atrule,
+/* .token.atrule,
 .token.class-name,
 .token.function {
   color: #5de4c7;
@@ -286,7 +286,7 @@ code[class*='language-html'] {
 .token.symbol,
 .token.tag {
   color: #e4f0fb;
-}
+} */
 
 /* .token.plain {
 	color: #e4f0fb;

@@ -23,7 +23,7 @@ const firaCode = Fira_Code({
 export default function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props;
   return (
-    <html lang="en" className={roboto.variable}>
+    <html lang="en" className={`${roboto.variable,firaCode.variable}`}>
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>

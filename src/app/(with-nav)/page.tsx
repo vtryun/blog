@@ -16,7 +16,7 @@ export default async function HomePage() {
       title: true,
       slug: true,
       createdAt: true,
-      author: true,
+      // author: true,
     },
     where: {
       status: PostStatus.PUBLISHED,
@@ -33,19 +33,21 @@ export default async function HomePage() {
         alignItems: 'center',
       }}
     >
-      <Stack gap={3}>
+      <Stack gap={3} mt={10}>
         {posts.map((post) => (
           <Stack key={post.slug} gap={0.5}>
             <MuiLink
               component={Link}
               href={`/post/${post.slug}`}
               underline="hover"
-              color="black"
             >
-              {post.title}
+              {/* title */}
+              <Typography color="black" fontSize={24} fontWeight={300}>
+                {post.title}
+              </Typography>
             </MuiLink>
             <Stack direction="row" gap={2} alignItems="center">
-              <Stack direction="row" alignItems="center" gap={0.5}>
+              {/* <Stack direction="row" alignItems="center" gap={0.5}>
                 <PersonOutlineIcon
                   sx={{
                     color: grey[500],
@@ -53,16 +55,17 @@ export default async function HomePage() {
                     height: 16,
                   }}
                 />
+
                 <MuiLink
                   component={Link}
-                  variant="caption"
+                  variant="body2"
                   underline="hover"
-                  sx={{ color: 'black', fontWeight: 500 }}
+                  sx={{ color: 'black', fontWeight: 400 }}
                   href={`/${post.author.name}`}
                 >
                   {post.author.name}
                 </MuiLink>
-              </Stack>
+              </Stack> */}
 
               <Stack direction="row" alignItems="center" gap={0.5}>
                 <AccessTimeIcon

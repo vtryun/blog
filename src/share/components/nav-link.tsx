@@ -1,43 +1,44 @@
-import { Link as MuiLink } from '@mui/material';
+import MuiLink from '@mui/material/Link';
 import Link from 'next/link';
 import Stack from '@mui/material/Stack';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import { grey } from '@mui/material/colors';
+import Box from '@mui/material/Box';
 
-const NAV_LINKS = [
-  { label: 'login', href: '/auth' },
-  { label: 'create post', href: '/post/edit' },
-  { label: 'dashboard', href: '/dashboard' },
-];
+const GITHUB_LINK = 'https://github.com/vtryun';
 
 export default function NavLink() {
   return (
-    <Stack
-      component="nav"
-      direction="row"
-      sx={{
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        position: 'sticky',
-        top: 0,
-        py: 1.5,
-        boxShadow: 1,
-        bgcolor: 'white',
-        zIndex: 1000,
-      }}
-    >
-      <Stack>
-        <MuiLink
-          component={Link}
-          underline="none"
-          color="black"
-          href="/"
-          sx={{ fontSize: 20, fontWeight: 600 }}
-        >
-          avatarYun
-        </MuiLink>
-      </Stack>
-      <Stack direction="row" gap={6}>
-        {NAV_LINKS.map((link) => (
+    <Box component="header">
+      <Stack
+        component="nav"
+        direction="row"
+        sx={{
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          position: 'sticky',
+          top: 0,
+          py: 4,
+          borderBottomWidth: 1,
+          borderBottomColor: 'divider',
+          borderBottomStyle: 'solid',
+          bgcolor: 'white',
+          zIndex: 1000,
+        }}
+      >
+        <Stack>
+          <MuiLink
+            component={Link}
+            underline="none"
+            color="black"
+            href="/"
+            sx={{ fontSize: 20, fontWeight: 600 }}
+          >
+            avatarYun
+          </MuiLink>
+        </Stack>
+        <Stack direction="row" gap={6}>
+          {/* {NAV_LINKS.map((link) => (
           <MuiLink
             key={link.href}
             component={Link}
@@ -47,8 +48,18 @@ export default function NavLink() {
           >
             {link.label}
           </MuiLink>
-        ))}
+        ))} */}
+          <Link href={GITHUB_LINK}>
+            <GitHubIcon
+              sx={{
+                cursor: 'pointer',
+                color: grey[600],
+                '&:hover': { color: grey[800] },
+              }}
+            />
+          </Link>
+        </Stack>
       </Stack>
-    </Stack>
+    </Box>
   );
 }

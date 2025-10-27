@@ -31,6 +31,7 @@ export const toggleBlock = (
     isAlignType(format) ? 'align' : 'type'
   );
   const isList = isListType(format);
+  console.log('toggleBlock:', { format, isActive });
 
   Transforms.unwrapNodes(editor, {
     match: (n) =>

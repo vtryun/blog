@@ -1,7 +1,7 @@
 import { INITIAL_VALUE } from '@/features/richtext/constants/initvalue';
 import prisma from '@/lib/prisma';
 import PostShow from '@/features/richtext/components/post-show';
-import { Container } from '@mui/material';
+import { Box, Container } from '@mui/material';
 
 export default async function PostPage({
   params: paramsPromise,
@@ -26,7 +26,9 @@ export default async function PostPage({
 
   return (
     <Container>
-      <PostShow content={content} />
+      <Box sx={{mt:15}}>
+        <PostShow content={content} />
+      </Box>
     </Container>
   );
 }

@@ -32,6 +32,11 @@ export const LANGUAGES = [
     icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg',
   },
   {
+    value: 'xml',
+    label: 'xml',
+    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xml/xml-original.svg',
+  },
+  {
     value: 'c',
     label: 'c',
     icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg',

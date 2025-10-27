@@ -71,8 +71,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
   posts         Post[]
-  comments      Comment[]
-  likes         Like[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -92,8 +90,6 @@ model Post {
   tags       Tag[]      @relation("PostTags")
   category   Category?  @relation(fields: [categoryId], references: [id])
   categoryId String?    @map("category_id")
-  comments   Comment[]
-  likes      Like[]
   createdAt  DateTime   @default(now()) @map("created_at")
   updatedAt  DateTime   @updatedAt @map("updated_at")
 
@@ -117,33 +113,6 @@ model Category {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("categories")
-}
-
-model Comment {
-  id        String    @id @default(cuid())
-  content   String
-  author    User      @relation(fields: [authorId], references: [id])
-  authorId  String    @map("author_id")
-  post      Post      @relation(fields: [postId], references: [id])
-  postId    String    @map("post_id")
-  parentId  String?   @map("parent_id")
-  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
-  replies   Comment[] @relation("CommentReplies")
-  createdAt DateTime  @default(now()) @map("created_at")
-
-  @@map("comments")
-}
-
-model Like {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String   @map("user_id")
-  post      Post     @relation(fields: [postId], references: [id])
-  postId    String   @map("post_id")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@unique([userId, postId])
-  @@map("likes")
 }
 
 enum Role {

@@ -3,13 +3,12 @@
 import { Transforms } from 'slate';
 import Box from '@mui/material/Box';
 import { useEffect, useMemo, useState } from 'react';
-import '@/features/richtext/styles/prism-code.css';
 import CheckIcon from '@mui/icons-material/Check';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { ReactEditor, useSlateStatic } from 'slate-react';
 import Prism from 'prismjs';
-import '@/features/richtext/styles/prism-code.css';
 import '@/share/styles/global.css';
+import '@/features/richtext/styles/prism-default.css';
 import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-xml-doc';
 import 'prismjs/components/prism-java';
@@ -83,13 +82,16 @@ export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
 
   return (
     <Box
+      component="pre"
       {...attributes}
       // onClick={readOnly ? null : props.onClick}
       spellCheck={false}
       sx={{
         position: 'relative',
         borderRadius: 2,
-        overflow: 'hidden',
+        overflow: 'visible',
+        bgcolor: '#f8f8f8',
+        p: 2,
       }}
     >
       {/* select code language */}
@@ -135,45 +137,39 @@ export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
         </Select>
       )}
 
+      <Typography variant="caption" color={grey[600]}>
+        {element.language}
+      </Typography>
+
       {/* copy button */}
       {readOnly && (
-        <Box sx={{ position: 'sticky', top: 10, zIndex: 9999 }}>
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              handleCopy();
-            }}
-            sx={{
-              position: 'absolute',
-              color: grey[400],
-              top: 10,
-              right: 10,
-              pointerEvents: 'auto',
-            }}
-          >
-            {copied ? (
-              <CheckIcon fontSize="small" />
-            ) : (
-              <ContentCopyIcon fontSize="small" />
-            )}
-          </IconButton>
+        <Box sx={{ position: 'sticky', top: 40, zIndex: 9999 }}>
+          <Box sx={{ position: 'absolute', bottom: 0, insetInlineEnd: 0 }}>
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCopy();
+              }}
+              sx={{
+                color: grey[400],
+              }}
+            >
+              {copied ? (
+                <CheckIcon fontSize="small" />
+              ) : (
+                <ContentCopyIcon fontSize="small" />
+              )}
+            </IconButton>
+          </Box>
         </Box>
       )}
 
-      <pre
+      <code
         className={`language-${element.language}`}
-        tabIndex={0}
-        style={{
-          pointerEvents: 'none',
-        }}
+        style={{ pointerEvents: 'auto', whiteSpace: 'pre' }}
       >
-        <code
-          className={`language-${element.language}`}
-          style={{ pointerEvents: 'auto' }}
-        >
-          {children}
-        </code>
-      </pre>
+        {children}
+      </code>
     </Box>
   );
 }

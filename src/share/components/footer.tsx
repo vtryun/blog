@@ -8,21 +8,23 @@ export default function Footer() {
     <Box
       component="footer"
       sx={{
-        mt: 'auto',
         display: 'flex',
         justifyContent: 'center',
-        py: 4,
+        py: 2,
+        zIndex: 100,
+        // bgcolor: 'white',
       }}
     >
       <MuiLink
         component={Link}
         href="https://beian.miit.gov.cn/"
+        target="_blank"
         underline="hover"
         sx={{
-           color:grey[500],
-           "&:hover":{
-             color:grey[800]
-           }
+          color: grey[500],
+          '&:hover': {
+            color: grey[800],
+          },
         }}
       >
         赣ICP备2025074615号-1

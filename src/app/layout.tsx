@@ -29,18 +29,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '100vh',
-              }}
-            >
-              <Box component="main" sx={{}}>
-                {children}
-              </Box>
-              <Footer />
-            </Box>
+            {children}
             <SnackbarAlert />
             <CssBaseline />
           </ThemeProvider>

@@ -44,19 +44,18 @@ export async function createPost(params: CreatePostParams) {
     throw new Error("title and content are required.");
   }
 
-  // 生成唯一 slug
-  const slug = slugify(`${title}-${nanoid(8)}`, { lower: true, strict: true });
+  // const slug = slugify(`${title}-${nanoid(8)}`, { lower: true, strict: true });
+  const slug = slugify(title, { lower: true, strict: true })
 
-  // 检查是否重复
   const existingPost = await prisma.post.findUnique({
     where: { slug },
   });
+
   if (existingPost) {
     throw new Error(`Duplicate slug: ${slug}. Please change the title.`);
   }
 
   return await prisma.$transaction(async (tx) => {
-    // 处理分类
     let categoryConnect;
     if (categoryId) {
       categoryConnect = { connect: { id: categoryId } };
@@ -69,7 +68,6 @@ export async function createPost(params: CreatePostParams) {
       categoryConnect = { connect: { id: category.id } };
     }
 
-    // 处理标签
     const tagConnects = [];
     if (tagIds.length > 0) {
       tagConnects.push(...tagIds.map((id) => ({ id })));
@@ -87,7 +85,6 @@ export async function createPost(params: CreatePostParams) {
       tagConnects.push(...tagRecords.map((t) => ({ id: t.id })));
     }
 
-    // 创建文章
     const post = await tx.post.create({
       data: {
         title,

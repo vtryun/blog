@@ -23,7 +23,6 @@ export default async function HomePage() {
     },
   });
 
-  console.log(posts);
   return (
     <Box
       sx={{

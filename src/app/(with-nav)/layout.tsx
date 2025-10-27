@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import NavLink from '@/share/components/nav-link';
+import Footer from '@/share/components/footer';
 
 export default function WithNavLayout({
   children,
@@ -7,9 +8,16 @@ export default function WithNavLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Box>
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateRows: 'auto 1fr auto',
+        minHeight: '100%',
+      }}
+    >
       <NavLink />
-      {children}
+      <Box component="main">{children}</Box>
+      <Footer />
     </Box>
   );
 }

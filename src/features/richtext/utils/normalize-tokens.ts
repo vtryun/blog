@@ -113,6 +113,5 @@ export const normalizeTokens = (
   }
 
   normalizeEmptyLines(currentLine)
-  console.log(acc)
   return acc
 }

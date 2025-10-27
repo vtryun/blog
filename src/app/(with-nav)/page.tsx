@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import { format } from 'date-fns';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { grey } from '@mui/material/colors';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 
 export default async function HomePage() {
   const posts = await prisma.post.findMany({
@@ -15,6 +16,7 @@ export default async function HomePage() {
       title: true,
       slug: true,
       createdAt: true,
+      author: true,
     },
     where: {
       status: PostStatus.PUBLISHED,
@@ -42,17 +44,38 @@ export default async function HomePage() {
             >
               {post.title}
             </MuiLink>
-            <Stack direction="row" gap={1} alignItems="center">
-              <AccessTimeIcon
-                sx={{
-                  color: grey[500],
-                  width: 20,
-                  height: 20,
-                }}
-              />
-              <Typography variant="caption">
-                {format(post.createdAt, 'yyyy-MM-dd HH:mm:ss')}
-              </Typography>
+            <Stack direction="row" gap={2} alignItems="center">
+              <Stack direction="row" alignItems="center" gap={0.5}>
+                <PersonOutlineIcon
+                  sx={{
+                    color: grey[500],
+                    width: 16,
+                    height: 16,
+                  }}
+                />
+                <MuiLink
+                  component={Link}
+                  variant="caption"
+                  underline="hover"
+                  sx={{ color: 'black', fontWeight: 500 }}
+                  href={`/${post.author.name}`}
+                >
+                  {post.author.name}
+                </MuiLink>
+              </Stack>
+
+              <Stack direction="row" alignItems="center" gap={0.5}>
+                <AccessTimeIcon
+                  sx={{
+                    color: grey[500],
+                    width: 16,
+                    height: 16,
+                  }}
+                />
+                <Typography variant="caption">
+                  {format(post.createdAt, 'yyyy-MM-dd HH:mm:ss')}
+                </Typography>
+              </Stack>
             </Stack>
           </Stack>
         ))}

@@ -16,7 +16,7 @@ import { withLayout } from '../plugins/with-layout';
 import { useDecorate } from '../hooks/useDecorate';
 import { Stack, Box, Typography } from '@mui/material';
 import { INITIAL_VALUE } from '../constants/initvalue';
-import { CODE_BLOCK_TYPE, HEADING_FOUR_TYPE } from '../constants/node-types';
+import { CODE_BLOCK_TYPE, HEADING_SIX_TYPE } from '../constants/node-types';
 
 export default function PostShow({
   content = INITIAL_VALUE,
@@ -40,12 +40,18 @@ export default function PostShow({
   let initValue: Descendant[];
 
   if (mode === 'anthor') {
+    // anthor mode don't show code
+    const filteredContent = safeContent.filter(
+      (node) => node.type !== CODE_BLOCK_TYPE
+    );
 
-    // change title h1 to h4
-    const titleNode = safeContent[0]
-      ? { ...safeContent[0], type: HEADING_FOUR_TYPE }
-      : { type: HEADING_FOUR_TYPE, children: [{ text: 'Untitled' }] };
-    const restNodes = safeContent.slice(1, 10);
+    // change title h1 to h6
+    const titleNode = filteredContent[0]
+      ? { ...filteredContent[0], type: HEADING_SIX_TYPE }
+      : { type: HEADING_SIX_TYPE, children: [{ text: 'Untitled' }] };
+
+    // anthor mode only show ten lines
+    const restNodes = filteredContent.slice(1, 10);
 
     initValue = [titleNode, ...restNodes];
   } else {

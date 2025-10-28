@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import MuiLink from '@mui/material/Link';
 import { RenderLeafProps } from 'slate-react';
 
 export const Leaf = (props: RenderLeafProps) => {
@@ -19,6 +21,14 @@ export const Leaf = (props: RenderLeafProps) => {
 
   if (leaf.underline) {
     children = <u>{children}</u>;
+  }
+
+  if (leaf.href) {
+    children = (
+      <MuiLink component={Link} href={leaf.href}>
+        {children}
+      </MuiLink>
+    );
   }
 
   return (

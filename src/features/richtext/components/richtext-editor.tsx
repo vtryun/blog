@@ -18,9 +18,6 @@ import Toolbar from '@/features/richtext/components/toolbar';
 import { useDecorate } from '@/features/richtext/hooks/useDecorate';
 import { withLayout } from '@/features/richtext/plugins/with-layout';
 import Stack from '@mui/material/Stack';
-import { createPost } from '@/features/richtext/actions/create-post';
-import { editPost } from '@/features/richtext/actions/edit-post';
-import { useSnackbar } from '@/share/hooks/use-snackbar';
 import { useClickOutsideBlock } from '../hooks/useClickOutsideBlock';
 import { selectedBlockAtom } from '../store/editor-store';
 import { useSetAtom } from 'jotai';
@@ -42,8 +39,8 @@ export default function RichtextEditor({
   title = '',
   categoryName = '',
   tagNames = [],
-  content = INITIAL_VALUE,
   status = 'PUBLISHED',
+  content = INITIAL_VALUE,
 }: RichtextEditorProps) {
   const editor = useMemo(
     () => withLayout(withHistory(withReact(createEditor()))),
@@ -58,7 +55,7 @@ export default function RichtextEditor({
       console.log('now:null');
       setSelectedBlock(null);
     },
-    ['block-setting-area']
+    ['richtext-setting-area']
   );
 
   const renderElement = useCallback(
@@ -90,9 +87,16 @@ export default function RichtextEditor({
             }}
           />
         </Stack>
-        <Box id="block-setting-area">
+        <Box id="richtext-setting-area">
           <Box sx={{ width: 400, p: 2, position: 'sticky', top: 0 }}>
-            <RichtextEditorSetting />
+            <RichtextEditorSetting
+              mode={mode}
+              slug={slug}
+              title={title}
+              categoryName={categoryName}
+              tagNames={tagNames}
+              status={status}
+            />
           </Box>
         </Box>
       </Slate>

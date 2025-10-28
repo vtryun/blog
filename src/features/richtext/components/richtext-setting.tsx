@@ -1,20 +1,35 @@
 import { Stack, Typography } from '@mui/material';
-import { useAtomValue, useAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { Transforms } from 'slate';
 import { selectedBlockAtom } from '../store/editor-store';
 import { AlertSetting } from './settings/alert-setting';
 import { CodeSetting } from './settings/code-setting';
 import MainSetting from './settings/main-setting';
-import { CustomEditor } from '../types/custom-types';
 import { useSlateStatic } from 'slate-react';
+import { ALERT_TYPE, CODE_BLOCK_TYPE } from '../constants/node-types';
 
 const settingRegistry: Record<string, React.FC<any>> = {
-  alert: AlertSetting,
-  main: MainSetting,
-  'code-block': CodeSetting,
+  [ALERT_TYPE]: AlertSetting,
+  [CODE_BLOCK_TYPE]: CodeSetting,
 };
 
-export default function RichtextEditorSetting() {
+interface RichtextEditorSettingProps {
+  mode: 'create' | 'edit';
+  slug?: string;
+  title?: string;
+  categoryName?: string;
+  tagNames?: string[];
+  status?: 'DRAFT' | 'PUBLISHED';
+}
+
+export default function RichtextEditorSetting({
+  mode,
+  slug,
+  title,
+  categoryName,
+  tagNames,
+  status,
+}: RichtextEditorSettingProps) {
   const [selectedBlock, setSelectedBlock] = useAtom(selectedBlockAtom);
   const editor = useSlateStatic();
   const type = selectedBlock?.props.type ?? 'main';
@@ -32,8 +47,22 @@ export default function RichtextEditorSetting() {
 
   return (
     <Stack sx={{ p: 2 }} spacing={2}>
+      <Typography variant="h6" sx={{ mb: 2 }}>
+        {mode === 'edit' ? 'Edit Post' : 'Create Post'}
+      </Typography>
       <Typography variant="caption">{type}</Typography>
-      <SettingComponent props={props} update={updateBlock} />
+      {settingRegistry[type] ? (
+        <SettingComponent props={props} update={updateBlock} />
+      ) : (
+        <MainSetting
+          mode={mode}
+          slug={slug}
+          title={title}
+          categoryName={categoryName}
+          tagNames={tagNames}
+          status={status}
+        />
+      )}
     </Stack>
   );
 }

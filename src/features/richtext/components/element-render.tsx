@@ -1,4 +1,4 @@
-import { RenderElementProps } from 'slate-react';
+import { ReactEditor, RenderElementProps, useSlateStatic } from 'slate-react';
 import { AlignType } from '@/features/richtext/types/custom-types';
 import { isAlignElement } from '@/features/richtext/utils/type-guards';
 import { Code } from '@/features/richtext/components/nodes/code';
@@ -29,18 +29,43 @@ import {
 import { Alert } from '@/features/richtext/components/nodes/alert';
 import Blockquote from '@/features/richtext/components/nodes/blockquote';
 import Divider from '@/features/richtext/components/nodes/divider';
+import { selectedBlockAtom } from '../store/editor-store';
+import { useAtom, useSetAtom } from 'jotai';
+import { Path, Node } from 'slate';
 
 export const Element = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
+  const editor = useSlateStatic();
   const style: React.CSSProperties = {};
   if (isAlignElement(element)) {
     style.textAlign = element.align as AlignType;
   }
+
+  const [selectedBlock, setSelectedBlock] = useAtom(selectedBlockAtom);
+  const handleClick = () => {
+    const path = ReactEditor.findPath(editor, element);
+    let blockData = {
+      path,
+      props: { ...element },
+    };
+
+    console.log('i select the ', element.type);
+
+    if (element.type === 'block-line') {
+      const parentPath = Path.parent(path);
+      const parentNode = Node.get(editor, parentPath);
+      (blockData.path = parentPath),
+        (blockData.props = { ...parentNode.element });
+    }
+    setSelectedBlock(blockData);
+    console.log(selectedBlock)
+  };
+
   switch (element.type) {
     case CODE_BLOCK_TYPE:
-      return <Code {...props} />;
+      return <Code {...props} onClick={handleClick} />;
     case ALERT_TYPE:
-      return <Alert {...props} />;
+      return <Alert {...props} onClick={handleClick} />;
     case BLOCK_QUOTE_TYPE:
       return <Blockquote {...props} />;
     case DIVIDER_TYPE:

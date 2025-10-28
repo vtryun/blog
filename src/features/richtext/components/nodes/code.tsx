@@ -36,7 +36,7 @@ import {
 import { LANGUAGES } from '@/features/richtext/constants/languages';
 
 export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
-  const { element, attributes, children } = props;
+  const { element, attributes, children, onClick } = props;
   const p = Prism;
   const editor = useSlateStatic();
   const readOnly = ReactEditor.isReadOnly(editor);
@@ -84,7 +84,7 @@ export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
     <Box
       component="pre"
       {...attributes}
-      // onClick={readOnly ? null : props.onClick}
+      onClick={readOnly ? null : onClick}
       spellCheck={false}
       sx={{
         position: 'relative',

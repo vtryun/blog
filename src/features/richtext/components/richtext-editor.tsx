@@ -2,7 +2,6 @@
 
 import { INITIAL_VALUE } from '@/features/richtext/constants/initvalue';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { useCallback, useMemo, useState } from 'react';
 import { createEditor, Descendant } from 'slate';
 import { withHistory } from 'slate-history';
@@ -19,16 +18,13 @@ import Toolbar from '@/features/richtext/components/toolbar';
 import { useDecorate } from '@/features/richtext/hooks/useDecorate';
 import { withLayout } from '@/features/richtext/plugins/with-layout';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import { createPost } from '@/features/richtext/actions/create-post';
 import { editPost } from '@/features/richtext/actions/edit-post';
 import { useSnackbar } from '@/share/hooks/use-snackbar';
-import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
+import { useClickOutsideBlock } from '../hooks/useClickOutsideBlock';
+import { selectedBlockAtom } from '../store/editor-store';
+import { useSetAtom } from 'jotai';
+import RichtextEditorSetting from './richtext-setting';
 
 interface RichtextEditorProps {
   mode: 'create' | 'edit';
@@ -44,21 +40,26 @@ export default function RichtextEditor({
   mode,
   slug,
   title = '',
-  content = INITIAL_VALUE,
   categoryName = '',
   tagNames = [],
-  status: initialStatus = 'PUBLISHED',
+  content = INITIAL_VALUE,
+  status = 'PUBLISHED',
 }: RichtextEditorProps) {
   const editor = useMemo(
     () => withLayout(withHistory(withReact(createEditor()))),
     []
   );
-  const { showSnackbar } = useSnackbar();
 
-  const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED'>(initialStatus);
-  const [category, setCategory] = useState(categoryName);
-  const [tags, setTags] = useState(tagNames.join(','));
   const decorate = useDecorate();
+  const setSelectedBlock = useSetAtom(selectedBlockAtom);
+  useClickOutsideBlock(
+    editor,
+    () => {
+      console.log('now:null');
+      setSelectedBlock(null);
+    },
+    ['block-setting-area']
+  );
 
   const renderElement = useCallback(
     (props: RenderElementProps) => <Element {...props} />,
@@ -69,49 +70,10 @@ export default function RichtextEditor({
     []
   );
 
-  async function handleSubmit() {
-    const titleText =
-      typeof editor.children?.[0]?.children?.[0]?.text === 'string'
-        ? editor.children[0].children[0].text
-        : title;
-
-    try {
-      if (mode === 'edit') {
-        await editPost({
-          title: titleText,
-          content: editor.children,
-          slug,
-          status,
-          categoryName: category,
-          tagNames: tags
-            .split(',')
-            .map((t) => t.trim())
-            .filter(Boolean),
-        });
-        showSnackbar('Post updated successfully', 'success');
-      } else {
-        await createPost({
-          title: titleText,
-          content: editor.children,
-          status,
-          categoryName: category,
-          tagNames: tags
-            .split(',')
-            .map((t) => t.trim())
-            .filter(Boolean),
-        });
-        showSnackbar('Post created successfully 🎉', 'success');
-      }
-    } catch (error) {
-      console.error(error);
-      showSnackbar(String(error), 'error');
-    }
-  }
-
   return (
     <Stack direction="row" justifyContent="space-between" height="100%" gap={2}>
-      <Stack flex={1} p={2}>
-        <Slate editor={editor} initialValue={content || INITIAL_VALUE}>
+      <Slate editor={editor} initialValue={content || INITIAL_VALUE}>
+        <Stack flex={1} p={2}>
           <Toolbar />
           <Editable
             renderElement={renderElement}
@@ -127,65 +89,13 @@ export default function RichtextEditor({
               border: `1px solid rgb(0 0 0 / 0.12)`,
             }}
           />
-        </Slate>
-      </Stack>
-      <Box>
-        <Stack
-          justifyContent="center"
-          gap={2}
-          sx={{ width: 400, p: 2, position: 'sticky', top: 0 }}
-        >
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            {mode === 'edit' ? 'Edit Post' : 'Create Post'}
-          </Typography>
-
-          <TextField
-            id="category"
-            label="Category"
-            variant="outlined"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-
-          <TextField
-            id="tags"
-            label="Tags (comma separated)"
-            variant="outlined"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-          />
-
-          <FormControl component="fieldset" margin="normal">
-            <FormLabel component="legend">Status</FormLabel>
-            <RadioGroup
-              name="status"
-              value={status}
-              onChange={(e) =>
-                setStatus(e.target.value as 'DRAFT' | 'PUBLISHED')
-              }
-            >
-              <FormControlLabel
-                value="DRAFT"
-                control={<Radio />}
-                label="Draft"
-              />
-              <FormControlLabel
-                value="PUBLISHED"
-                control={<Radio />}
-                label="Published"
-              />
-            </RadioGroup>
-          </FormControl>
-
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            sx={{ textTransform: 'none', mt: 2 }}
-          >
-            {mode === 'edit' ? 'Update Post' : 'Create Post'}
-          </Button>
         </Stack>
-      </Box>
+        <Box id="block-setting-area">
+          <Box sx={{ width: 400, p: 2, position: 'sticky', top: 0 }}>
+            <RichtextEditorSetting />
+          </Box>
+        </Box>
+      </Slate>
     </Stack>
   );
 }

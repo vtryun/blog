@@ -13,7 +13,6 @@ import { useSnackbar } from '@/share/hooks/use-snackbar';
 import { useState } from 'react';
 import { createPost } from '../../actions/create-post';
 import { editPost } from '../../actions/edit-post';
-import { CustomEditor } from '../../types/custom-types';
 import { useSlateStatic } from 'slate-react';
 
 interface MainSettingProps {
@@ -33,6 +32,7 @@ export default function MainSetting({
   tagNames = [],
   status: initialStatus = 'PUBLISHED',
 }: MainSettingProps) {
+  console.log(mode, slug, title, categoryName, tagNames, initialStatus);
   const editor = useSlateStatic();
   const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED'>(initialStatus);
   const [category, setCategory] = useState(categoryName);
@@ -80,10 +80,6 @@ export default function MainSetting({
 
   return (
     <Stack justifyContent="center" gap={2}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        {mode === 'edit' ? 'Edit Post' : 'Create Post'}
-      </Typography>
-
       <TextField
         id="category"
         label="Category"

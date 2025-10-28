@@ -16,6 +16,7 @@ import {
   AlertBlockElement,
   BlockQuoteElement,
   CodeBlockElement,
+  CustomEditor,
   CustomElementFormat,
   CustomTextKey,
   DividerElement,
@@ -30,6 +31,7 @@ import {
   ALERT_TYPE,
   BLOCK_QUOTE_TYPE,
   BULLETED_LIST_TYPE,
+  CODE_BLOCK_TYPE,
   DIVIDER_TYPE,
   HEADING_ONE_TYPE,
   HEADING_TWO_TYPE,
@@ -39,6 +41,8 @@ import {
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import Tooltip from '@mui/material/Tooltip';
+import { insertCode } from './nodes/code';
+import { insertAlert } from './nodes/alert';
 
 interface MarkButtonProps {
   format: CustomTextKey;
@@ -87,129 +91,30 @@ const BlockButton = ({ format, icon }: BlockButtonProps) => {
   );
 };
 
-const CodeBlockButton = () => {
+function InsertButton({
+  format,
+  icon,
+  insert,
+}: {
+  format: string;
+  icon: React.ReactNode;
+  insert: (editor: CustomEditor) => void;
+}) {
   const editor = useSlate();
-
-  const handleClick = () => {
-    const codeBlock: CodeBlockElement = {
-      type: 'code-block',
-      language: 'javascript',
-      children: [{ type: 'code-line', children: [{ text: '' }] }],
-    };
-
-    const paragraph: ParagraphElement = {
-      type: 'paragraph',
-      children: [{ text: '' }],
-    };
-
-    Transforms.insertNodes(editor, [codeBlock, paragraph]);
-  };
-
   return (
-    <IconButton
-      data-test-id="code-block-button"
-      onPointerDown={(event: PointerEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-      }}
-      onClick={handleClick}
-    >
-      <CodeIcon />
-    </IconButton>
-  );
-};
-
-const AlertBlockButton = () => {
-  const editor = useSlate();
-
-  const handleClick = () => {
-    const alertBlock: AlertBlockElement = {
-      type: ALERT_TYPE,
-      children: [{ text: '' }],
-      severity: 'success',
-    };
-
-    const paragraph: ParagraphElement = {
-      type: PARAGRAPH_TYPE,
-      children: [{ text: '' }],
-    };
-
-    Transforms.insertNodes(editor, [alertBlock, paragraph]);
-  };
-
-  return (
-    <IconButton
-      data-test-id="alert-block-button"
-      onPointerDown={(event: PointerEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-      }}
-      onClick={handleClick}
-    >
-      <PriorityHighIcon />
-    </IconButton>
-  );
-};
-
-const DividerBlockButton = () => {
-  const editor = useSlate();
-
-  const handleClick = () => {
-    const dividerBlock: DividerElement = {
-      type: DIVIDER_TYPE,
-      children: [{ text: '' }],
-    };
-
-    const paragraph: ParagraphElement = {
-      type: PARAGRAPH_TYPE,
-      children: [{ text: '' }],
-    };
-
-    Transforms.insertNodes(editor, [dividerBlock, paragraph]);
-  };
-
-  return (
-    <IconButton
-      data-test-id="alert-block-button"
-      onPointerDown={(event: PointerEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-      }}
-      onClick={handleClick}
-    >
-      <HorizontalRuleIcon />
-    </IconButton>
-  );
-};
-
-const BlockquoteBlockButton = () => {
-  const editor = useSlate();
-
-  const handleClick = () => {
-    const blockquoteBlock: BlockQuoteElement = {
-      type: BLOCK_QUOTE_TYPE,
-      children: [{ text: '' }],
-    };
-
-    const paragraph: ParagraphElement = {
-      type: PARAGRAPH_TYPE,
-      children: [{ text: '' }],
-    };
-
-    Transforms.insertNodes(editor, [blockquoteBlock, paragraph]);
-  };
-
-  return (
-    <Tooltip title={BLOCK_QUOTE_TYPE}>
+    <Tooltip title={format}>
       <IconButton
-        data-test-id="alert-block-button"
+        data-test-id={`${format}-insert-button`}
         onPointerDown={(event: PointerEvent<HTMLButtonElement>) => {
           event.preventDefault();
         }}
-        onClick={handleClick}
+        onClick={() => insert(editor)}
       >
-        <FormatQuote />
+        {icon}
       </IconButton>
     </Tooltip>
   );
-};
+}
 
 export default function Toolbar() {
   return (
@@ -225,10 +130,26 @@ export default function Toolbar() {
       <BlockButton format="center" icon={<FormatAlignCenter />} />
       <BlockButton format="right" icon={<FormatAlignRight />} />
       <BlockButton format="justify" icon={<FormatAlignJustify />} />
-      <CodeBlockButton />
-      <AlertBlockButton />
-      <DividerBlockButton />
-      <BlockquoteBlockButton />
+      <InsertButton
+        format={CODE_BLOCK_TYPE}
+        icon={<CodeIcon />}
+        insert={insertCode}
+      />
+      <InsertButton
+        format={ALERT_TYPE}
+        icon={<PriorityHighIcon />}
+        insert={insertAlert}
+      />
+      <InsertButton
+        format={DIVIDER_TYPE}
+        icon={<HorizontalRuleIcon />}
+        insert={insertAlert}
+      />
+      <InsertButton
+        format={BLOCK_QUOTE_TYPE}
+        icon={<FormatQuote />}
+        insert={insertAlert}
+      />
     </Box>
   );
 }

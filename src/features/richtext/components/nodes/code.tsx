@@ -20,20 +20,13 @@ import 'prismjs/components/prism-markdown';
 import 'prismjs/components/prism-sql';
 import { grey } from '@mui/material/colors';
 import {
-  IconButton,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Stack,
-  Typography,
-} from '@mui/material';
-import {
   RenderElementPropsFor,
   CodeBlockElement,
   CustomEditor,
   ParagraphElement,
 } from '@/features/richtext/types/custom-types';
-import { LANGUAGES } from '@/features/richtext/constants/languages';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
 
 export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
   const { element, attributes, children, onClick } = props;
@@ -94,50 +87,7 @@ export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
         p: 2,
       }}
     >
-      {/* select code language */}
-      {!readOnly && (
-        <Select
-          labelId="code-language-select-label"
-          id="code-language-select"
-          value={element.language || 'plaintext'}
-          label="Language"
-          onChange={(event: SelectChangeEvent) =>
-            setLanguage(event.target.value as string)
-          }
-          renderValue={(value) => {
-            const lang = LANGUAGES.find((l) => l.value === value);
-            return (
-              <Stack direction="row" alignItems="center" spacing={1}>
-                {lang && (
-                  <Box
-                    component="img"
-                    src={lang.icon}
-                    alt={lang.label}
-                    sx={{ width: 22, height: 22 }}
-                  />
-                )}
-                <Typography>{lang?.label ?? value}</Typography>
-              </Stack>
-            );
-          }}
-        >
-          {LANGUAGES.map((lang) => (
-            <MenuItem key={lang.value} value={lang.value}>
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <Box
-                  component="img"
-                  src={lang.icon}
-                  alt={lang.label}
-                  sx={{ width: 22, height: 22 }}
-                />
-                <Typography>{lang.label}</Typography>
-              </Stack>
-            </MenuItem>
-          ))}
-        </Select>
-      )}
-
-      <Typography variant="caption" color={grey[600]}>
+      <Typography variant="caption" color={grey[600]} contentEditable={false}>
         {element.language}
       </Typography>
 

@@ -230,6 +230,7 @@ export type CustomText = {
   list?: boolean
   hr?: boolean
   blockquote?: boolean
+  href?: string
   text: string
 }
 

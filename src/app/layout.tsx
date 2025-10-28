@@ -5,6 +5,7 @@ import theme from '@/share/styles/theme';
 import { Roboto, Fira_Code } from 'next/font/google';
 import CssBaseline from '@mui/material/CssBaseline';
 import SnackbarAlert from '@/share/components/snackbar-alert';
+import '@/share/styles/global.css'
 import Footer from '@/share/components/footer';
 import Box from '@mui/material/Box';
 

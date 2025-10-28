@@ -29,7 +29,6 @@ import FormLabel from '@mui/material/FormLabel';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
-import { green, red } from '@mui/material/colors';
 
 interface RichtextEditorProps {
   mode: 'create' | 'edit';
@@ -110,90 +109,83 @@ export default function RichtextEditor({
   }
 
   return (
-    <Box height="100%">
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        height="100%"
-        gap={2}
-      >
-        <Stack flex={1} p={2}>
-          <Slate editor={editor} initialValue={content || INITIAL_VALUE}>
-            <Toolbar />
-            <Editable
-              renderElement={renderElement}
-              renderLeaf={renderLeaf}
-              decorate={decorate}
-              spellCheck={false}
-              autoFocus
-              placeholder="Enter a title…"
-              style={{
-                flex: 1,
-                padding: 16,
-                outline: 'none',
-                border: `1px solid rgb(0 0 0 / 0.12)`,
-              }}
-            />
-          </Slate>
-        </Stack>
-        <Box>
-          <Stack
-            justifyContent="center"
-            gap={2}
-            sx={{ width: 400, p: 2, position: 'sticky', top: 0 }}
-          >
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              {mode === 'edit' ? 'Edit Post' : 'Create Post'}
-            </Typography>
-
-            <TextField
-              id="category"
-              label="Category"
-              variant="outlined"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            />
-
-            <TextField
-              id="tags"
-              label="Tags (comma separated)"
-              variant="outlined"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-            />
-
-            <FormControl component="fieldset" margin="normal">
-              <FormLabel component="legend">Status</FormLabel>
-              <RadioGroup
-                name="status"
-                value={status}
-                onChange={(e) =>
-                  setStatus(e.target.value as 'DRAFT' | 'PUBLISHED')
-                }
-              >
-                <FormControlLabel
-                  value="DRAFT"
-                  control={<Radio />}
-                  label="Draft"
-                />
-                <FormControlLabel
-                  value="PUBLISHED"
-                  control={<Radio />}
-                  label="Published"
-                />
-              </RadioGroup>
-            </FormControl>
-
-            <Button
-              variant="contained"
-              onClick={handleSubmit}
-              sx={{ textTransform: 'none', mt: 2 }}
-            >
-              {mode === 'edit' ? 'Update Post' : 'Create Post'}
-            </Button>
-          </Stack>
-        </Box>
+    <Stack direction="row" justifyContent="space-between" height="100%" gap={2}>
+      <Stack flex={1} p={2}>
+        <Slate editor={editor} initialValue={content || INITIAL_VALUE}>
+          <Toolbar />
+          <Editable
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
+            decorate={decorate}
+            spellCheck={false}
+            autoFocus
+            placeholder="Enter a title…"
+            style={{
+              flex: 1,
+              padding: 16,
+              outline: 'none',
+              border: `1px solid rgb(0 0 0 / 0.12)`,
+            }}
+          />
+        </Slate>
       </Stack>
-    </Box>
+      <Box>
+        <Stack
+          justifyContent="center"
+          gap={2}
+          sx={{ width: 400, p: 2, position: 'sticky', top: 0 }}
+        >
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            {mode === 'edit' ? 'Edit Post' : 'Create Post'}
+          </Typography>
+
+          <TextField
+            id="category"
+            label="Category"
+            variant="outlined"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          />
+
+          <TextField
+            id="tags"
+            label="Tags (comma separated)"
+            variant="outlined"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+          />
+
+          <FormControl component="fieldset" margin="normal">
+            <FormLabel component="legend">Status</FormLabel>
+            <RadioGroup
+              name="status"
+              value={status}
+              onChange={(e) =>
+                setStatus(e.target.value as 'DRAFT' | 'PUBLISHED')
+              }
+            >
+              <FormControlLabel
+                value="DRAFT"
+                control={<Radio />}
+                label="Draft"
+              />
+              <FormControlLabel
+                value="PUBLISHED"
+                control={<Radio />}
+                label="Published"
+              />
+            </RadioGroup>
+          </FormControl>
+
+          <Button
+            variant="contained"
+            onClick={handleSubmit}
+            sx={{ textTransform: 'none', mt: 2 }}
+          >
+            {mode === 'edit' ? 'Update Post' : 'Create Post'}
+          </Button>
+        </Stack>
+      </Box>
+    </Stack>
   );
 }

@@ -24,29 +24,30 @@ export default async function HomePage() {
   });
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        minHeight: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Stack gap={3} mt={10}>
-        {posts.map((post) => (
-          <Stack key={post.slug} gap={0.5}>
-            <MuiLink
-              component={Link}
-              href={`/post/${post.slug}`}
-              underline="hover"
-            >
-              {/* title */}
-              <Typography color="black" fontSize={24} fontWeight={300}>
-                {post.title}
-              </Typography>
-            </MuiLink>
-            <Stack direction="row" gap={2} alignItems="center">
-              {/* <Stack direction="row" alignItems="center" gap={0.5}>
+    <Box sx={{ height: '100%' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Stack gap={3} mt={10}>
+          {posts.map((post) => (
+            <Stack key={post.slug} gap={0.5}>
+              <MuiLink
+                component={Link}
+                href={`/post/${post.slug}`}
+                underline="hover"
+              >
+                {/* title */}
+                <Typography color="black" fontSize={24} fontWeight={300}>
+                  {post.title}
+                </Typography>
+              </MuiLink>
+              <Stack direction="row" gap={2} alignItems="center">
+                {/* <Stack direction="row" alignItems="center" gap={0.5}>
                 <PersonOutlineIcon
                   sx={{
                     color: grey[500],
@@ -66,22 +67,23 @@ export default async function HomePage() {
                 </MuiLink>
               </Stack> */}
 
-              <Stack direction="row" alignItems="center" gap={0.5}>
-                <AccessTimeIcon
-                  sx={{
-                    color: grey[500],
-                    width: 16,
-                    height: 16,
-                  }}
-                />
-                <Typography variant="caption">
-                  {format(post.createdAt, 'yyyy-MM-dd HH:mm:ss')}
-                </Typography>
+                <Stack direction="row" alignItems="center" gap={0.5}>
+                  <AccessTimeIcon
+                    sx={{
+                      color: grey[500],
+                      width: 16,
+                      height: 16,
+                    }}
+                  />
+                  <Typography variant="caption">
+                    {format(post.createdAt, 'yyyy-MM-dd HH:mm:ss')}
+                  </Typography>
+                </Stack>
               </Stack>
             </Stack>
-          </Stack>
-        ))}
-      </Stack>
+          ))}
+        </Stack>
+      </Box>
     </Box>
   );
 }

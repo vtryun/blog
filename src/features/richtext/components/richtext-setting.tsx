@@ -18,17 +18,13 @@ interface RichtextEditorSettingProps {
   slug?: string;
   title?: string;
   categoryName?: string;
-  tagNames?: string[];
+  tagNames?: string;
   status?: 'DRAFT' | 'PUBLISHED';
 }
 
 export default function RichtextEditorSetting({
   mode,
   slug,
-  title,
-  categoryName,
-  tagNames,
-  status,
 }: RichtextEditorSettingProps) {
   const [selectedBlock, setSelectedBlock] = useAtom(selectedBlockAtom);
   const editor = useSlateStatic();
@@ -37,10 +33,10 @@ export default function RichtextEditorSetting({
   const path = selectedBlock?.path;
 
   const updateBlock = (newProps: Record<string, any>) => {
-    if (!editor || !path) return;
+    if (!editor || !path || !selectedBlock) return;
     const merged = { ...props, ...newProps };
     Transforms.setNodes(editor, merged, { at: path });
-    setSelectedBlock({ ...selectedBlock!, props: merged });
+    setSelectedBlock({ ...selectedBlock, props: merged });
   };
 
   const SettingComponent = settingRegistry[type] ?? MainSetting;
@@ -50,18 +46,11 @@ export default function RichtextEditorSetting({
       <Typography variant="h6" sx={{ mb: 2 }}>
         {mode === 'edit' ? 'Edit Post' : 'Create Post'}
       </Typography>
-      <Typography variant="caption">{type}</Typography>
+      {type !== 'main' && <Typography variant="caption">{type}</Typography>}
       {settingRegistry[type] ? (
         <SettingComponent props={props} update={updateBlock} />
       ) : (
-        <MainSetting
-          mode={mode}
-          slug={slug}
-          title={title}
-          categoryName={categoryName}
-          tagNames={tagNames}
-          status={status}
-        />
+        <MainSetting mode={mode} slug={slug} />
       )}
     </Stack>
   );

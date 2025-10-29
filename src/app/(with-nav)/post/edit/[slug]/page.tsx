@@ -17,8 +17,8 @@ export default async function EditPage({ params }: EditPageProps) {
     return <div>Post not found.</div>;
   }
 
-  if(post.status === 'ARCHIVED'){
-    return <div>the Post is archived, can't edit</div>
+  if (post.status === 'ARCHIVED') {
+    return <div>the Post is archived, can't edit</div>;
   }
 
   return (
@@ -28,7 +28,7 @@ export default async function EditPage({ params }: EditPageProps) {
       title={post.title}
       content={post.content as any}
       categoryName={post.category?.name ?? ''}
-      tagNames={post.tags.map((t) => t.name)}
+      tagNames={post.tags.join('')}
       status={post.status}
     />
   );

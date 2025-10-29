@@ -8,4 +8,19 @@ export interface SelectedBlock {
   props: Record<string, any>;
 }
 
+export interface MainSetting {
+  title: string;
+  categoryName: string;
+  tagNames: string;
+  status: 'DRAFT' | 'PUBLISHED';
+}
+
 export const selectedBlockAtom = atom<SelectedBlock | null>(null);
+
+
+export const mainSettingAtom = atom<MainSetting>({
+  title: '',
+  categoryName: '',
+  tagNames: '',
+  status: 'DRAFT',
+});

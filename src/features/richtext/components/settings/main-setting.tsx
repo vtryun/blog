@@ -6,14 +6,14 @@ import FormLabel from '@mui/material/FormLabel';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { useSnackbar } from '@/share/hooks/use-snackbar';
-import { useState } from 'react';
 import { createPost } from '../../actions/create-post';
 import { editPost } from '../../actions/edit-post';
 import { useSlateStatic } from 'slate-react';
+import { type MainSetting, mainSettingAtom } from '../../store/editor-store';
+import { useAtom } from 'jotai';
 
 interface MainSettingProps {
   mode: 'create' | 'edit';
@@ -27,23 +27,30 @@ interface MainSettingProps {
 export default function MainSetting({
   mode,
   slug,
-  title = '',
-  categoryName = '',
-  tagNames = [],
-  status: initialStatus = 'PUBLISHED',
-}: MainSettingProps) {
-  console.log(mode, slug, title, categoryName, tagNames, initialStatus);
+}: {
+  mode: 'create' | 'edit';
+  slug?: string;
+}) {
+  // console.log(mode, slug, title, categoryName, tagNames, initialStatus);
   const editor = useSlateStatic();
-  const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED'>(initialStatus);
-  const [category, setCategory] = useState(categoryName);
-  const [tags, setTags] = useState(tagNames.join(','));
+  const [mainSetting, setMainSetting] = useAtom(mainSettingAtom);
+  // const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED'>(initialStatus);
+  // const [category, setCategory] = useState(categoryName);
+  // const [tags, setTags] = useState(tagNames.join(','));
   const { showSnackbar } = useSnackbar();
+
+  const updateMainSetting = <k extends keyof MainSetting>(
+    field: k,
+    value: MainSetting[k]
+  ) => {
+    setMainSetting((prev) => ({ ...prev, [field]: value }));
+  };
 
   async function handleSubmit() {
     const titleText =
       typeof editor.children?.[0]?.children?.[0]?.text === 'string'
         ? editor.children[0].children[0].text
-        : title;
+        : mainSetting.title;
 
     try {
       if (mode === 'edit') {
@@ -51,9 +58,9 @@ export default function MainSetting({
           title: titleText,
           content: editor.children,
           slug,
-          status,
-          categoryName: category,
-          tagNames: tags
+          status: mainSetting.status,
+          categoryName: mainSetting.categoryName,
+          tagNames: mainSetting.tagNames
             .split(',')
             .map((t) => t.trim())
             .filter(Boolean),
@@ -63,9 +70,9 @@ export default function MainSetting({
         await createPost({
           title: titleText,
           content: editor.children,
-          status,
-          categoryName: category,
-          tagNames: tags
+          status: mainSetting.status,
+          categoryName: mainSetting.categoryName,
+          tagNames: mainSetting.tagNames
             .split(',')
             .map((t) => t.trim())
             .filter(Boolean),
@@ -84,24 +91,26 @@ export default function MainSetting({
         id="category"
         label="Category"
         variant="outlined"
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
+        value={mainSetting.categoryName}
+        onChange={(e) => updateMainSetting('categoryName', e.target.value)}
       />
 
       <TextField
         id="tags"
         label="Tags (comma separated)"
         variant="outlined"
-        value={tags}
-        onChange={(e) => setTags(e.target.value)}
+        value={mainSetting.tagNames}
+        onChange={(e) => updateMainSetting('tagNames', e.target.value)}
       />
 
       <FormControl component="fieldset" margin="normal">
         <FormLabel component="legend">Status</FormLabel>
         <RadioGroup
           name="status"
-          value={status}
-          onChange={(e) => setStatus(e.target.value as 'DRAFT' | 'PUBLISHED')}
+          value={mainSetting.status}
+          onChange={(e) =>
+            updateMainSetting('status', e.target.value as 'DRAFT' | 'PUBLISHED')
+          }
         >
           <FormControlLabel value="DRAFT" control={<Radio />} label="Draft" />
           <FormControlLabel

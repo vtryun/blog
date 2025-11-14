@@ -49,8 +49,6 @@ export const Element = (props: RenderElementProps) => {
       props: { ...element },
     };
 
-    console.log('i select the ', element.type);
-
     if (element.type === 'block-line') {
       const parentPath = Path.parent(path);
       const parentNode = Node.get(editor, parentPath);
@@ -58,7 +56,6 @@ export const Element = (props: RenderElementProps) => {
         (blockData.props = { ...parentNode.element });
     }
     setSelectedBlock(blockData);
-    console.log(selectedBlock)
   };
 
   switch (element.type) {

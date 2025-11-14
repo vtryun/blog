@@ -1,8 +1,6 @@
-'use client';
-
 import { Transforms } from 'slate';
 import Box from '@mui/material/Box';
-import { useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { ReactEditor, useSlateStatic } from 'slate-react';
@@ -27,6 +25,40 @@ import {
 } from '@/features/richtext/types/custom-types';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+
+interface LanguageSelectProps
+  extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  value?: string;
+  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+}
+
+const LanguageSelect = (props: LanguageSelectProps) => {
+  return (
+    <select
+      data-test-id="language-select"
+      contentEditable={false}
+      style={{
+        position: 'absolute',
+        right: 5,
+        top: 5,
+        zIndex: 1,
+      }}
+      {...props}
+    >
+      <option value="css">CSS</option>
+      <option value="html">HTML</option>
+      <option value="java">Java</option>
+      <option value="javascript">JavaScript</option>
+      <option value="jsx">JSX</option>
+      <option value="typescript">TypeScript</option>
+      <option value="tsx">TSX</option>
+      <option value="markdown">Markdown</option>
+      <option value="php">PHP</option>
+      <option value="python">Python</option>
+      <option value="sql">SQL</option>
+    </select>
+  );
+};
 
 export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
   const { element, attributes, children, onClick } = props;
@@ -62,9 +94,9 @@ export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      console.log('chenggong');
+      console.log('copy success');
     } catch (err) {
-      console.error('复制失败', err);
+      console.error('copy failed', err);
     }
   };
 
@@ -87,6 +119,13 @@ export function Code(props: RenderElementPropsFor<CodeBlockElement>) {
         p: 2,
       }}
     >
+      {/* editor status */}
+      {!readOnly && (
+        <LanguageSelect
+          value={element.language}
+          onChange={(e) => setLanguage(e.target.value)}
+        />
+      )}
       <Typography variant="caption" color={grey[600]} contentEditable={false}>
         {element.language}
       </Typography>

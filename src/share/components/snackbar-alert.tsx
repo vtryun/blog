@@ -1,5 +1,3 @@
-"use client";
-
 import Alert, { AlertProps } from '@mui/material/Alert';
 import Snackbar, { SnackbarProps } from '@mui/material/Snackbar';
 import { useAtom } from 'jotai';

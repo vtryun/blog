@@ -56,6 +56,13 @@ export const isBlockActive = (
 }
 
 export const isMarkActive = (editor: CustomEditor, format: CustomTextKey) => {
-  const marks = Editor.marks(editor)
-  return marks ? marks[format] === true : false
-}
+  const marks = Editor.marks(editor);
+  
+  if (!marks) return false;
+
+  if (format === 'href') {
+    return Object.hasOwn(marks, 'href');
+  }
+
+  return marks[format] === true;
+};

@@ -1,68 +1,39 @@
-import {
-  Editor,
-  Node,
-  NodeEntry,
-  Element as SlateElement,
-  Transforms,
-} from 'slate';
+import { Editor, NodeEntry, Element as SlateElement, Transforms } from 'slate';
 import {
   CustomEditor,
-  TitleElement,
   ParagraphElement,
-  CustomElementType,
 } from '@/features/richtext/types/custom-types';
 
+// A Slate.js plugin to ensure the editor always ends with a paragraph node
 export const withLayout = (editor: CustomEditor) => {
   const { normalizeNode } = editor;
 
-  editor.normalizeNode = ([node, path]: NodeEntry) => {
-    if (path.length === 0) {
-      if (editor.children.length <= 1 && Editor.string(editor, [0, 0]) === '') {
-        const title: TitleElement = {
-          type: 'title',
-          children: [{ text: 'Untitled' }],
-        };
-        Transforms.insertNodes(editor, title, {
-          at: path.concat(0),
-          select: true,
-        });
-      }
+  editor.normalizeNode = (entry: NodeEntry) => {
+    const [node, path] = entry;
 
-      if (editor.children.length < 2) {
+    if (Editor.isEditor(node)) {
+      const lastIndex = node.children.length - 1;
+      const lastNode = node.children[lastIndex];
+
+      if (
+        node.children.length === 0 ||
+        !SlateElement.isElement(lastNode) ||
+        lastNode.type !== 'paragraph'
+      ) {
         const paragraph: ParagraphElement = {
           type: 'paragraph',
           children: [{ text: '' }],
         };
-        Transforms.insertNodes(editor, paragraph, { at: path.concat(1) });
-      }
 
-      for (const [child, childPath] of Node.children(editor, path)) {
-        let type: CustomElementType;
-        const slateIndex = childPath[0];
-        const enforceType = (type: CustomElementType) => {
-          if (SlateElement.isElement(child) && child.type !== type) {
-            const newProperties: Partial<SlateElement> = { type };
-            Transforms.setNodes<SlateElement>(editor, newProperties, {
-              at: childPath,
-            });
-          }
-        };
-
-        switch (slateIndex) {
-          case 0:
-            type = 'title';
-            enforceType(type);
-            break;
-          case 1:
-            type = 'paragraph';
-            enforceType(type);
-          default:
-            break;
-        }
+        Transforms.insertNodes(editor, paragraph, {
+          at: [node.children.length],
+        });
+        console.log('Inserted missing paragraph at the end');
+        return;
       }
     }
 
-    return normalizeNode([node, path]);
+    return normalizeNode(entry);
   };
 
   return editor;

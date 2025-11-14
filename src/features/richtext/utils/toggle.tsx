@@ -14,10 +14,23 @@ import {
 export const toggleMark = (editor: CustomEditor, format: CustomTextKey) => {
   const isActive = isMarkActive(editor, format);
 
-  if (isActive) {
-    Editor.removeMark(editor, format);
+  if (format === 'href') {
+    console.log(isActive);
+
+    if (isActive) {
+      Editor.removeMark(editor, format);
+    } else {
+      let result = prompt('input your href');
+      Editor.addMark(editor, format, result);
+      console.log('add href');
+    }
   } else {
-    Editor.addMark(editor, format, true);
+    if (isActive) {
+      Editor.removeMark(editor, format);
+    } else {
+      Editor.addMark(editor, format, true);
+    }
+    console.log('change boolean');
   }
 };
 

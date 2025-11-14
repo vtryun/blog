@@ -61,7 +61,7 @@ model Verification {
 model User {
   id            String    @id @default(cuid())
   // better-auth 
-  name          String
+  name          String    @unique
   email         String    @unique
   emailVerified Boolean
   image         String?
@@ -71,8 +71,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   posts         Post[]
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
 
   @@map("user")
 }
@@ -88,8 +88,6 @@ model Post {
   author     User       @relation(fields: [authorId], references: [id])
   authorId   String     @map("author_id")
   tags       Tag[]      @relation("PostTags")
-  category   Category?  @relation(fields: [categoryId], references: [id])
-  categoryId String?    @map("category_id")
   createdAt  DateTime   @default(now()) @map("created_at")
   updatedAt  DateTime   @updatedAt @map("updated_at")
 
@@ -106,22 +104,14 @@ model Tag {
   @@map("tags")
 }
 
-model Category {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  posts     Post[]
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@map("categories")
-}
-
 enum Role {
   USER
   ADMIN
 }
 
 enum PostStatus {
+  PRIVATE
   DRAFT
-  PUBLISHED
+  PUBLIC
   ARCHIVED
 }

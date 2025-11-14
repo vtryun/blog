@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import { grey } from '@mui/material/colors';
 import MuiLink from '@mui/material/Link';
-import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -16,7 +15,6 @@ export default function Footer() {
       }}
     >
       <MuiLink
-        component={Link}
         href="https://beian.miit.gov.cn/"
         target="_blank"
         underline="hover"
